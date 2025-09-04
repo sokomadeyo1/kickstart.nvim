@@ -213,6 +213,15 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+vim.keymap.set('n', '<leader>bd', '<cmd>bd<CR>', { desc = '[B]uffer [D]elete' })
+
+vim.keymap.set('n', ']t', function()
+  require('todo-comments').jump_next()
+end, { desc = 'Next TODO comment' })
+vim.keymap.set('n', '[t', function()
+  require('todo-comments').jump_prev()
+end, { desc = 'Previous TODO comment' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -317,11 +326,20 @@ require('lazy').setup({
             end
             return s
           end,
+          show_buffer_close_icons = false,
         },
       }
     end,
   },
-  'github/copilot.vim',
+  {
+    'github/copilot.vim',
+    vim.keymap.set('n', '<leader>cp', ':Copilot panel<CR>'),
+    vim.keymap.set('n', '<leader>ce', ':Copilot enable<CR>'),
+    vim.keymap.set('n', '<leader>cd', ':Copilot disable<CR>'),
+    config = function()
+      vim.g.copilot_enabled = false
+    end,
+  },
   {
     'sontungexpt/url-open',
     event = 'VeryLazy',
@@ -545,7 +563,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      -- vim.keymap.set('n', '<leader>st', require('todo-comments').TodoTelescope, { desc = '[S]earch [T]odo signs' })
+      vim.keymap.set('n', '<leader>st', '<cmd>TodoTelescope<CR>', { desc = '[S]earch [T]odo comments' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
